@@ -1,41 +1,65 @@
-import { Component } from "react";
-import Statistic from "./Statistic/Statistic";
-import FeedbackOptions from "./Statistic/FeedbackOptions";
-import Section from "./Statistic/Section";
-import Notification from "./Statistic/Notification";
+import { useState } from 'react';
+import Statistic from './Statistic/Statistic';
+import FeedbackOptions from './Statistic/FeedbackOptions';
+import Section from './Statistic/Section';
+import Notification from './Statistic/Notification';
+import { useEffect } from 'react';
 
-class App extends Component{
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0
-  }
-   countTotalFeedback = () => {
-        return  this.state.good + this.state.neutral + this.state.bad;
-    }
-    countPositiveFeedbackPercentage = () => {
-        return 100 * this.state.good/this.countTotalFeedback();
-  }
-  handleClickFeedback = (e) => {
+const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const handleClickFeedback = e => {
+    console.log(e.target.name);
     const name = e.target.name; //значення name = назві відгуку
-    this.setState((prevState) => ({ //prevState(попередній стан) - це аргумент, попередній стан компонента перед оновленням
-      [name]: prevState[name] + 1
-    }));
-  }
-  render() {
-    const {good,neutral,bad} = this.state
-    return (
-      <>
-        <Section title="Please leave feedback">
-        <FeedbackOptions options={{ good, neutral, bad }} onLeaveFeedback={this.handleClickFeedback} />
-        </Section>
-        {this.countTotalFeedback() !== 0 ?
-        <Section title="Statistic"><Statistic good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback} positivePercentage={this.countPositiveFeedbackPercentage} /></Section>
-        :
-        <Notification message="There is no feedback"></Notification>} 
-      </>
-  );
-  }
-}
-export default App;
+    switch (name) {
+      case 'good':
+        setGood(prev => prev + 1);
+        break;
+      case 'neutral':
+        setNeutral(prev => prev + 1);
+        break;
+      case 'bad':
+        setBad(prev => prev + 1);
+        break;
+      default:
+        return;
+    }
+  };
 
+  useEffect(() => {});
+
+  const total = () => {
+    return good + neutral + bad;
+  };
+  const positivePercentage = () => {
+    return (100 * good) / (good + neutral + bad);
+  };
+
+  return (
+    <>
+      <Section title="Please leave feedback">
+        <FeedbackOptions
+          options={{ good, neutral, bad }}
+          onLeaveFeedback={handleClickFeedback}
+        />
+      </Section>
+      {good + neutral + bad ? (
+        <Section title="Statistic">
+          <Statistic
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={total}
+            positivePercentage={positivePercentage}
+          />
+        </Section>
+      ) : (
+        <Notification message="There is no feedback"></Notification>
+      )}
+    </>
+  );
+};
+
+export default App;
