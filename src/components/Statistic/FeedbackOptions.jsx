@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import { Button } from './Statistic.styled';
 
 const FeedbackOptions = ({ options, onLeaveFeedback }) => {
@@ -10,3 +12,8 @@ const FeedbackOptions = ({ options, onLeaveFeedback }) => {
 export default FeedbackOptions;
 
 //e.charAt(0).toUpperCase() + e.slice(1) - перша літера велика (слово.charAt(0).toUpperCase())+ інші маленькі (слово.slice(1))
+
+FeedbackOptions.propTypes = {
+  options: PropTypes.object,
+  onLeaveFeedback: PropTypes.func,
+};
